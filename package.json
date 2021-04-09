@@ -1,0 +1,19 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "- Node.js是一个能够在服务器端运行JavaScript的开放源代码、跨平台JavaScript运行环境",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "art-template": "^4.13.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-art-template": "^1.0.1",
+    "mongoose": "^5.12.3",
+    "mysql": "^2.18.1"
+  }
+}

@@ -1,0 +1,41 @@
+html, body {
+  max-width: 1000px;
+  min-width: 600px;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+}
+.wrapper {
+  padding: 0 16px;
+  margin: 20px 0px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #fff;
+}
+.wrapper .item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+.wrapper .item:last-of-type {
+  border-bottom: none;
+}
+
+.wrapper .item span {
+  color: #999;
+  font-size: 14px;
+}
+textarea, input {
+  width: 100%;
+  margin-bottom: 16px;
+}
+input[type="radio"] {
+  width: auto;
+}
+
+th, td {
+  padding: 6px 10px;
+}
+table {
+  border-collapse: collapse;
+}

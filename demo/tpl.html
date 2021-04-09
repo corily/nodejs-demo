@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>node 模板引擎</title>
+</head>
+<body>
+  <p>名字： {{ name }}</p>
+  <p>年龄： {{ age }}</p>
+  <p>爱好：</p>
+  <ul>
+    {{ each hobbies }} 
+    <li>{{ $value }}</li>
+    {{ /each }}
+   
+  </ul>
+</body>
+</html>

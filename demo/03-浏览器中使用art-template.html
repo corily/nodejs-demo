@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模板引擎 art-template</title>
+</head>
+<body>
+  
+</body>
+<script src="/node_modules/art-template/lib/template-web.js"></script>
+<script type="text/template" id="tpl">
+名字： {{ name }}
+年龄： {{ age }}
+爱好： 
+      {{ each hobbies }} 
+          {{ $value }}
+      {{ /each }}
+</script>
+<script>
+  const data = {
+    name: 'vovo',
+    age: 18,
+    hobbies: ['吃饭', '睡觉', '打豆豆']
+  }
+  const ret = template('tpl', data)
+  console.log(1222, ret)
+</script>
+</html>
