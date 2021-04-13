@@ -5,7 +5,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const dbpath = path.resolve(__dirname, './db.json')
+const dbpath = path.join(__dirname, './db.json')
 
 // 写入
 const setStu = (data, callback) => {

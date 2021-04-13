@@ -11,13 +11,14 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const path = require('path');
 
 const router = require('./router')
 
 const app = express()
 
 // 开放公共路径
-app.use('/public/', express.static('../../public/'))
+app.use('/public/', express.static(path.join(__dirname, '../../public/')))
 // app.use(express.static('public'))
 
 // 配置使用 art-template 模板引擎

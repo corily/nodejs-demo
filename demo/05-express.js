@@ -39,7 +39,7 @@ const comments = [
 // 公开指定目录
 // 公开public目录，通过 /public/xxx 的方式访问 public 目录中的资源
 // 推荐写法
-app.use('/public/', express.static('../public/'))
+app.use('/public/', express.static(path.join(__dirname, '../public/')))
 
 // 省略第一个参数时，以 /xxx 方式访问 public 目录资源
 // app.use(express.static('./public/'))
@@ -47,7 +47,7 @@ app.use('/public/', express.static('../public/'))
 // 通过 /aa/xxx 的方式访问 public 目录中的资源
 // app.use('/aa/', express.static('./public/'))
 
-// app.use('/favicon.ico', express.static('../favicon.ico'))
+app.use('/favicon.ico', express.static(path.join(__dirname, '../public/favicon.ico')))
 
 // 配置使用 art-template 模板引擎
 // 第一个参数：用art-template模板引擎渲染 .html 结尾的文件
@@ -86,17 +86,17 @@ app.get('/', (req, res) => {
   // res.send('hello express') 
 
   // res.render('index.html', {comments})
-  res.render(path.resolve(__dirname, '../views/index.html'), {comments})
+  res.render(path.join(__dirname, '../views/index.html'), {comments})
 })
 
 app.get('/admin', (req, res) => {
   // res.render('admin/index.html', {title: '管理系统'})
-  res.render(path.resolve(__dirname, '../views/admin/index.html'), {title: '管理系统'})
+  res.render(path.join(__dirname, '../views/admin/index.html'), {title: '管理系统'})
 })
 
 app.get('/post', (req, res) => {
   // res.render('post.html')
-  res.render(path.resolve(__dirname, '../views/post.html'))
+  res.render(path.join(__dirname, '../views/post.html'))
 })
 
 // form 用 get 接收
@@ -135,7 +135,7 @@ app.post('/comment', (req, res) => {
 
 app.get('*', (req, res) => {
   // res.render('not-found.html')
-  res.render(path.resolve(__dirname, '../views/not-found.html'))
+  res.render(path.join(__dirname, '../views/not-found.html'))
 })
 
 app.listen(3000, () => {

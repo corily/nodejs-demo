@@ -10,17 +10,17 @@ router
   .get('/', (req, res) => {
     students.find((err, data) => {
       if (err) return res.send('获取学生信息失败' + err)
-      res.render(path.resolve(__dirname, './tpl/index.html'), {students: data})
+      res.render(path.join(__dirname, './tpl/index.html'), {students: data})
     })
   })
   .get('/students', (req, res) => {
     students.find((err, data) => {
       if (err) return res.send('获取学生信息失败' + err)
-      res.render(path.resolve(__dirname, './tpl/index.html'), {students: data})
+      res.render(path.join(__dirname, './tpl/index.html'), {students: data})
     })
   })
   .get('/students/new', (req, res) => {
-    res.render(path.resolve(__dirname, './tpl/new.html'))
+    res.render(path.join(__dirname, './tpl/new.html'))
   })
   .post('/students/new', (req, res) => {
     new students(req.body).save((err) => {
@@ -31,7 +31,7 @@ router
   .get('/students/edit', (req, res) => {
     students.findById(req.query.id, (err, data) => {
       if (err) return res.send(err)
-      res.render(path.resolve(__dirname, './tpl/edit.html'), {data})
+      res.render(path.join(__dirname, './tpl/edit.html'), {data})
     })
     
   })

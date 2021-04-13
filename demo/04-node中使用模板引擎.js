@@ -1,6 +1,7 @@
 const tpl = require('art-template')
 const fs = require('fs')
 const http = require('http')
+const path = require('path');
 
 http.createServer()
     .on('request', (req, res) => {
@@ -11,7 +12,7 @@ http.createServer()
         hobbies: ['吃饭', '睡觉', '打豆豆']
       }
       
-      fs.readFile('./tpl.html', (err, data) => {
+      fs.readFile(path.join(__dirname, './tpl.html'), (err, data) => {
         if (err) return console.log('读取失败~~');
         
         // data: 默认是二进制数据

@@ -11,13 +11,15 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const path = require('path');
+const fs = require('fs'); 
 
 const router = require('./router')
 
 const app = express()
 
 // 开放公共路径
-app.use('/public/', express.static('../public/'))
+app.use('/public/', express.static(path.join(__dirname, '../../public/')))
 // app.use(express.static('public'))
 
 // 配置使用 art-template 模板引擎
@@ -34,6 +36,26 @@ app.use(bodyParser.json())
 // 把路由容器挂载到 app 服务中
 app.use(router)
 
+
+app.use('/aa', (req, res, next) => {
+  console.log(111)
+  fs.readFile('./a/we/sesr/aa', (err, data) => {
+    // next: 传入参数，默认跳到错误中间件
+    if (err) return next(err)
+    next()
+  })
+})
+
+// 配置 处理404 中间件
+app.use((req, res) => {
+  res.render(path.join(__dirname, './tpl/404.html')) 
+})
+
+
+// 配置错误处理中间件
+app.use((err, req, res, next) => {
+  res.status(500).send(err.message)
+})
 
 app.listen(3000, () => {
   console.log('server is running at port 3000')

@@ -61,6 +61,34 @@ module.exports = () => {}   // { Function }
 引用类型： 保存在（堆内存）内存中的对象们，不能直接操作，只能通过保存在（栈内存）变量中的地址引用对其进行操作
 
 
+#### Path模块
+
+fs文件操作路径中，相对路径是相对于执行 node 命令所处的路径，因此使用相对路径是不可靠的，应该使用绝对路径
+
+node中的除了 `require`、`exports` 等模块成员，还有其它两个成员
+
+`__dirname`： 获取当前文件`目录的绝对路径`
+`__filename`： 获取当前`文件的绝对路径`
+
+```javascript
+
+const { join, resolve } = require('path')
+
+// join 方法，返回拼接后的 规范化路径
+join('./a/b', 'c') // 返回 相对路径 ./a/b/c
+join('/a/b', '/c') // 返回 绝对路径 /a/b/c
+
+
+// resolve 方法， 返回解析后的 绝对路径
+// 如跟目录为： /目录A
+resolve('./a/b', '../c') //  /目录A/a/c
+resolve('/a/b', '/c') //  /目录A/c
+resolve('/a/b', '/c', 'd') //  /目录A/c/d
+
+```
+
+
+
 #### Buffer缓冲器
 
  - 从结构上看Buffer非常像一个数组，它的元素为16进制的两位数
@@ -178,15 +206,15 @@ app.get('/', (req, res) => {
 ```javascript
 // 公开public目录，通过 /public/xxx 的方式访问 public 目录中的资源
 // 推荐写法
-app.use('/public/', express.static('./public/'))
+app.use('/public/', express.static(path.join(__dirname, '../public/')))
 
 // 省略第一个参数时，以 /xxx 方式访问 public 目录资源
-// app.use(express.static('./public/'))
+// app.use(express.static(path.join(__dirname, '../public/')))
 
 // 通过 /aa/xxx 的方式访问 public 目录中的资源
-// app.use('/aa/', express.static('./public/'))
+// app.use('/aa/', express.static(path.join(__dirname, '../public/')))
 
-app.use('/favicon.ico', express.static('./favicon.ico'))
+app.use('/favicon.ico', express.static(path.join(__dirname, '../public/favicon.ico')))
 
 ```
 
@@ -217,6 +245,96 @@ app.post('/comment', (req, res) => {
   console.log(req.body);
 })
 ```
+
+
+
+##### 4、中间件
+
+中间件：处理请求的一个函数，该函数接收 请求对象req、响应对象res、下一个中间件函数next
+
+Express 应用程序可以使用以下类型的中间件：
+  - 应用层中间件
+  - 路由器层中间件
+  - 错误处理中间件
+  - 内置中间件
+    - express.static
+    - express.json
+    - express.urlencoded
+  - 第三方中间件
+
+
+```javascript
+
+// 所有请求都进入这里
+app.use((req, res, next) => {
+  ...
+  next()
+})
+
+// url中有 /b/ 的请求进入， 如 /a/b/c ， 此时 req.url = '/c'
+app.use('/b', (req, res, next) => {
+  ...
+  next()
+})
+
+// 严格匹配请求方法和请求路径的中间件：路由器层中间件 get/post/put/delete
+app.get('/a', (req, res, next) => {
+  ...
+  next()
+})
+
+app.post('/b', (req, res, next) => {
+  ...
+  next()
+})
+
+
+app.use('/aa', (req, res, next) => {
+  console.log(111)
+  fs.readFile('./a/we/sesr/aa', (err, data) => {
+    // next: 传入参数，默认跳到错误中间件
+    if (err) return next(err)
+    next()
+  })
+})
+
+// 配置 处理404 中间件
+app.use((req, res) => {
+  res.render(path.join(__dirname, './tpl/404.html')) 
+})
+
+
+// 配置错误处理中间件
+app.use((err, req, res, next) => {
+  res.status(500).send(err.message)
+})
+
+```
+
+
+#### session
+
+
+```javascript
+/*
+  express 框架默认不支持 session 和 cookie
+    解决：使用第三方包 express-session 来解决
+    注意： 配置在 router 挂载之前
+    使用： 配置后， 可通过 req.session 来访问 和 设置 session 成员
+          添加： req.session.data = xxx
+          访问： req.session.data
+*/
+
+// 配置
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+}))
+
+```
+
+
 
 #### 数据库
 
@@ -320,23 +438,25 @@ const User = mongoose.model('User', userSchema)
 
 
 // 新增数据
-const admin = new User({
+new User({
   username: 'jack',
   password: '666',
   email: '666@ad.com'
-})
-
-admin.save((err, data) => {
+}).save((err, data) => {
   if (err) return
   ...
 })
 
 
+
 // 查询数据： 无条件，返回所有数据
 User.find((err, data) => {})
 
-// 查询数据： 条件查询
+// 查询数据： and条件查询
 User.find({ username: 'jack', password: '666' }, (err, data) => {})
+
+// 查询数据： or条件查询
+User.find($or: [{ username: 'jack' }, { password: '666' }], (err, data) => {})
 
 // 查询数据： 只查询一条数据，返回第一条符合条件的数据
 User.findOne({ username: 'jack' }, (err, data) => {})

@@ -1,5 +1,6 @@
 const http = require('http')
 const fs = require('fs')
+const path = require('path');
 
 const server = http.createServer()
 
@@ -29,7 +30,7 @@ server.on('request', (req, res) => {
   // 文件操作路径可以省略 ./  【require 不能省略 ./】
   //        fs.readFile('template.html', () => {})
   // 等价于 fs.readFile('./template.html', () => {})
-  fs.readFile('./template.html', (err, data) => {
+  fs.readFile(path.join(__dirname, './template.html'), (err, data) => {
     if (err) return res.end('404 Not Found')
     fs.readdir(`${www}${url}`, (err, files) => {
       if (err) return res.end('Can not find www dir')
