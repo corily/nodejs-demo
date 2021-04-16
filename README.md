@@ -87,6 +87,128 @@ resolve('/a/b', '/c', 'd') //  /目录A/c/d
 
 ```
 
+#### util模块
+
+util.promisify
+
+```javascript
+
+const util = require('util')
+const fs = require('fs')
+
+// 返回一个新函数，函数返回promise对象
+const readFile = util.promisify(fs.readfile)
+
+readFile('./app.js')
+  .then(res => {})
+  .catch(err => {})
+
+
+```
+
+##### 关于Promise： new Promise(executor)
+在 new 时，会同时调用 executor 构造函数
+中断链式promise:返回一个pending状态 return new Promise(() => {})
+
+```javascript
+// p1 new 出来时，会同时执行 executor 函数，然后才会执行 then/catch 方法
+const p1 = new Promise((resolve, reject) => {
+  resolve('ok)
+})
+
+p1
+  .then(res => {})
+  .catch(err => {})
+
+
+// p2 new 出来时，会同时执行 executor 函数，再执行 then/catch 方法，1s 后执行setTimeout方法
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('ok')
+  }, 1000)
+})
+
+p2
+  .then(res => {})
+  .catch(err => {})
+
+```
+
+
+- 状态：
+  - 待定( pending )： 初始状态
+  - 已兑现( fulfilled/resolved )： 操作成功
+  - 已拒绝( rejected )： 操作失败
+
+```javascript
+
+// 改变 promise 状态的3种情况
+const p1 = new Promise((resolve, reject) => {
+  // resolve('ok)
+  // reject('error')
+  throw 'error'
+})
+
+```
+
+- 方法：
+  - Promise.resolve()
+  - Promise.reject()
+  - Promise.all(array)
+    - array 的每个元素是promise实例，所有promise实例都执行成功fulfilled，才返回 一个成功的数组，只要有一个执行失败，则all方法终止，返回执行失败的promise内容
+  - Promise.race(array)
+    - array 的每个元素是promise实例，只要有一个执行完成（fulfilled/rejected），就返回最先执行完成的
+
+
+```javascript
+
+const p1 = Promise.resolve(1)
+const p2 = Promise.resolve(2)
+const p3 = Promise.resolve(3)
+
+Promise.all([ p1, p2, p3 ])
+  .then(res => {
+    console.log(res) // [1,2,3]
+  })
+
+
+const p4 = Promise.resolve(4)
+const p5 = Promise.reject(5)
+const p6 = Promise.resolve(6)
+
+Promise.all([ p4, p5, p6 ])
+  .then(res => {
+    // then 不执行
+    console.log(res)
+  })
+  .catch(err => {
+    // catch 执行
+    console.log(err) // 5
+  })
+
+
+const p7 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('success')
+  }, 1000)
+})
+const p8 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject('failed')
+  }, 500)
+})
+
+Promise.race([ p7, p8 ])
+  .then(res => {
+    // then 不执行
+    console.log(res)
+  })
+  .catch(err => {
+    // catch 执行
+    console.log(err) // failed
+  })
+
+```
 
 
 #### Buffer缓冲器
@@ -290,7 +412,6 @@ app.post('/b', (req, res, next) => {
 
 
 app.use('/aa', (req, res, next) => {
-  console.log(111)
   fs.readFile('./a/we/sesr/aa', (err, data) => {
     // next: 传入参数，默认跳到错误中间件
     if (err) return next(err)
